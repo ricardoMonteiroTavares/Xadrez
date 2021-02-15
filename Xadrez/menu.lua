@@ -36,6 +36,24 @@ local function onPlayBtnRelease()
 	return true	-- indicates successful touch
 end
 
+-- Função que cria os botões
+-- String title -> título do botão
+-- int 	  y_pos -> posição do botão no eixo y
+local function createButton(title, y_pos)
+	local btn =  widget.newButton{
+		label = title,
+		labelColor = { default={ 1.0 }, over={ 0.5 } },
+		defaultFile = REC_BUTTON_PNG,
+		overFile = REC_BUTTON_PNG_OVER,
+		width = BUTTON_WIDTH, 
+		height = BUTTON_HEIGHT,
+		onRelease = onPlayBtnRelease	-- event listener function
+	}
+	btn.x = display.contentCenterX
+	btn.y = y_pos
+	return btn
+end
+
 function scene:create( event )
 	local sceneGroup = self.view
 
