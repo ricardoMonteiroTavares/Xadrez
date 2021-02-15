@@ -63,15 +63,25 @@ end
 -- Função que cria os botões
 -- String title -> título do botão
 -- int 	  y_pos -> posição do botão no eixo y
-local function createButton(title, y_pos)
-	local btn =  widget.newButton{
+-- Retorno: Button Widget 
+local function createButton(title, y_pos, func)
+	
+	assert(type(title) == "string" ,"O título do botão deve ser do tipo string")
+	assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
+	assert(type(func) == "function" ,"O evento do botão deve ser do tipo function")
+	
+		local btn =  widget.newButton{
 		label = title,
-		labelColor = { default={ 1.0 }, over={ 0.5 } },
+		labelColor = { 
+			default = color("fff"), 
+			over = color("b58863")
+		},
+		fontSize = 28,
 		defaultFile = REC_BUTTON_PNG,
 		overFile = REC_BUTTON_PNG_OVER,
 		width = BUTTON_WIDTH, 
 		height = BUTTON_HEIGHT,
-		onRelease = onPlayBtnRelease	-- event listener function
+		onRelease = func	-- event listener function
 	}
 	btn.x = display.contentCenterX
 	btn.y = y_pos
@@ -97,9 +107,9 @@ function scene:create( event )
 
 	-- create a widget button (which will loads level1.lua on release)
 
-	pvpBtn = createButton("Jogador vs Jogador", 		(display.contentHeight - 500))
-	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 340))
-	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 180))
+	pvpBtn = createButton("Jogador vs Jogador", 		(display.contentHeight - 500), onPlayBtnRelease)
+	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 340), onPlayBtnRelease)
+	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 180), onPlayBtnRelease)
 	
 	-- all display objects must be inserted into group
 	--sceneGroup:insert( background )
