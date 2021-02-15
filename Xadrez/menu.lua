@@ -72,40 +72,10 @@ function scene:create( event )
 	local title = display.newText("Xadrez", display.contentCenterX, 200, native.systemFont, 150);
 
 	-- create a widget button (which will loads level1.lua on release)
-	pvpBtn = widget.newButton{
-		label = "Jogador vs Jogador",
-		labelColor = { default={ 1.0 }, over={ 0.5 } },
-		defaultFile = "button.png",
-		overFile = "button-over.png",
-		width = 154, height = 40,
-		onRelease = onPlayBtnRelease	-- event listener function
-	}
-	pvpBtn.x = display.contentCenterX
-	pvpBtn.y = display.contentHeight - 500
 
-
-	pviBtn = widget.newButton{
-		label = "Jogador vs Computador",
-		labelColor = { default={ 1.0 }, over={ 0.5 } },
-		defaultFile = "button.png",
-		overFile = "button-over.png",
-		width = 154, height = 40,
-		onRelease = onPlayBtnRelease	-- event listener function
-	}
-	pviBtn.x = display.contentCenterX
-	pviBtn.y = display.contentHeight - 340
-
-
-	iviBtn = widget.newButton{
-		label = "Computador vs Computador",
-		labelColor = { default={ 1.0 }, over={ 0.5 } },
-		defaultFile = "button.png",
-		overFile = "button-over.png",
-		width = 154, height = 40,
-		onRelease = onPlayBtnRelease	-- event listener function
-	}
-	iviBtn.x = display.contentCenterX
-	iviBtn.y = display.contentHeight - 180
+	pvpBtn = createButton("Jogador vs Jogador", 		(display.contentHeight - 500))
+	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 340))
+	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 180))
 	
 	-- all display objects must be inserted into group
 	--sceneGroup:insert( background )
