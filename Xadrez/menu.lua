@@ -15,6 +15,7 @@ local widget = require "widget"
 -- forward declarations and other locals
 local pvpBtn
 local pviBtn
+local iviBtn
 
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
@@ -69,19 +70,23 @@ function scene:create( event )
 	pviBtn.x = display.contentCenterX
 	pviBtn.y = display.contentHeight - 340
 
+
+	iviBtn = widget.newButton{
+		label = "Computador vs Computador",
 		labelColor = { default={ 1.0 }, over={ 0.5 } },
 		defaultFile = "button.png",
 		overFile = "button-over.png",
 		width = 154, height = 40,
 		onRelease = onPlayBtnRelease	-- event listener function
 	}
-	playBtn.x = display.contentCenterX
-	playBtn.y = display.contentHeight - 125
+	iviBtn.x = display.contentCenterX
+	iviBtn.y = display.contentHeight - 180
 	
 	-- all display objects must be inserted into group
 	--sceneGroup:insert( background )
 	sceneGroup:insert( pvpBtn )
 	sceneGroup:insert( pviBtn )
+	sceneGroup:insert( iviBtn )
 end
 
 function scene:show( event )
@@ -129,6 +134,10 @@ function scene:destroy( event )
 		pviBtn:removeSelf()	-- widgets must be manually removed
 		pviBtn = nil
 	end
+
+	if iviBtn then
+		iviBtn:removeSelf()	-- widgets must be manually removed
+		iviBtn = nil
 	end
 end
 
