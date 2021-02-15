@@ -20,6 +20,7 @@ local REC_BUTTON_PNG_OVER = REC_BUTTON_PATH .. "rectangleButton_over.png"
 local BUTTON_HEIGHT = 96
 local BUTTON_WIDTH = 400
 
+local FONT = "Times New Roman"
 --------------------------------------------
 
 -- forward declarations and other locals
@@ -76,7 +77,8 @@ local function createButton(title, y_pos, func)
 			default = color("fff"), 
 			over = color("b58863")
 		},
-		fontSize = 28,
+		fontSize = 30,
+		font = FONT,
 		defaultFile = REC_BUTTON_PNG,
 		overFile = REC_BUTTON_PNG_OVER,
 		width = BUTTON_WIDTH, 
@@ -103,7 +105,7 @@ function scene:create( event )
 	-- background.x = 0 + display.screenOriginX 
 	-- background.y = 0 + display.screenOriginY
 	
-	local title = display.newText("Xadrez", display.contentCenterX, 200, native.systemFont, 150);
+	local title = display.newText("Xadrez", display.contentCenterX, 200, FONT, 200);
 
 	-- create a widget button (which will loads level1.lua on release)
 
