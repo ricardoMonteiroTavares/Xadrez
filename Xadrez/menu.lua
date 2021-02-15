@@ -41,11 +41,8 @@ function scene:create( event )
 	-- background.x = 0 + display.screenOriginX 
 	-- background.y = 0 + display.screenOriginY
 	
-	-- create/position logo/title image on upper-half of the screen
-	local titleLogo = display.newImageRect( "logo.png", 264, 42 )
-	titleLogo.x = display.contentCenterX
-	titleLogo.y = 100
-	
+	local title = display.newText("Xadrez", display.contentCenterX, 200, native.systemFont, 150);
+
 	-- create a widget button (which will loads level1.lua on release)
 	pvpBtn = widget.newButton{
 		label = "Jogador vs Jogador",
@@ -84,6 +81,7 @@ function scene:create( event )
 	
 	-- all display objects must be inserted into group
 	--sceneGroup:insert( background )
+	sceneGroup:insert( title )
 	sceneGroup:insert( pvpBtn )
 	sceneGroup:insert( pviBtn )
 	sceneGroup:insert( iviBtn )
