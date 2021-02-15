@@ -13,7 +13,7 @@ local widget = require "widget"
 --------------------------------------------
 
 -- forward declarations and other locals
-local playBtn
+local pvpBtn
 
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
@@ -45,8 +45,16 @@ function scene:create( event )
 	titleLogo.y = 100
 	
 	-- create a widget button (which will loads level1.lua on release)
-	playBtn = widget.newButton{
-		label = "Play Now",
+	pvpBtn = widget.newButton{
+		label = "Jogador vs Jogador",
+		labelColor = { default={ 1.0 }, over={ 0.5 } },
+		defaultFile = "button.png",
+		overFile = "button-over.png",
+		width = 154, height = 40,
+		onRelease = onPlayBtnRelease	-- event listener function
+	}
+	pvpBtn.x = display.contentCenterX
+	pvpBtn.y = display.contentHeight - 500
 		labelColor = { default={ 1.0 }, over={ 0.5 } },
 		defaultFile = "button.png",
 		overFile = "button-over.png",
@@ -58,6 +66,7 @@ function scene:create( event )
 	
 	-- all display objects must be inserted into group
 	--sceneGroup:insert( background )
+	sceneGroup:insert( pvpBtn )
 end
 
 function scene:show( event )
@@ -96,9 +105,10 @@ function scene:destroy( event )
 	-- INSERT code here to cleanup the scene
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	
-	if playBtn then
-		playBtn:removeSelf()	-- widgets must be manually removed
-		playBtn = nil
+	if pvpBtn then
+		pvpBtn:removeSelf()	-- widgets must be manually removed
+		pvpBtn = nil
+	end
 	end
 end
 
