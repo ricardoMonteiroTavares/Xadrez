@@ -10,6 +10,16 @@ local scene = composer.newScene()
 -- include Corona's "widget" library
 local widget = require "widget"
 
+-- pasta que contém os botões
+local REC_BUTTON_PATH = "\\assets\\buttons\\rectangleButton\\"
+
+-- caminho dos arquivos png
+local REC_BUTTON_PNG = REC_BUTTON_PATH .. "rectangleButton.png"
+local REC_BUTTON_PNG_OVER = REC_BUTTON_PATH .. "rectangleButton_over.png"
+
+local BUTTON_HEIGHT = 96
+local BUTTON_WIDTH = 400
+
 --------------------------------------------
 
 -- forward declarations and other locals
