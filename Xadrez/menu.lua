@@ -10,10 +10,23 @@ local scene = composer.newScene()
 -- include Corona's "widget" library
 local widget = require "widget"
 
+-- pasta que contém os botões
+local REC_BUTTON_PATH = "\\assets\\buttons\\rectangleButton\\"
+
+-- caminho dos arquivos png
+local REC_BUTTON_PNG = REC_BUTTON_PATH .. "rectangleButton.png"
+local REC_BUTTON_PNG_OVER = REC_BUTTON_PATH .. "rectangleButton_over.png"
+
+local BUTTON_HEIGHT = 96
+local BUTTON_WIDTH = 400
+
+local FONT = "Times New Roman"
 --------------------------------------------
 
 -- forward declarations and other locals
-local playBtn
+local pvpBtn
+local pviBtn
+local iviBtn
 
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
@@ -22,6 +35,59 @@ local function onPlayBtnRelease()
 	composer.gotoScene( "level1", "fade", 500 )
 	
 	return true	-- indicates successful touch
+end
+
+-- Função que converte um código de cor em hexadecimal sem o # em um código de cor decimal
+-- String hex -> Cor em hexadecimal sem #
+-- Retorno: rgb table
+local function color(hex)
+	assert(type(hex) == "string" ,"O código de cor deve ser do tipo string")
+	
+	if string.len(hex) == 6 then
+		local r = tonumber(string.sub(hex,1,2), 16)/255
+		local g = tonumber(string.sub(hex,3,4), 16)/255
+		local b = tonumber(string.sub(hex,5,6), 16)/255
+
+		return { r, g, b }
+	
+	elseif string.len(hex) == 3 then
+		local r = (tonumber(string.sub(hex, 1, 1), 16) * 17)/255
+		local g = (tonumber(string.sub(hex, 2, 2), 16) * 17)/255
+		local b = (tonumber(string.sub(hex, 3, 3), 16) * 17)/255
+
+		return { r, g, b }
+	else
+		error("O código de cor deve ter apenas 3 ou 6 caracteres.")
+	end
+end
+
+-- Função que cria os botões
+-- String title -> título do botão
+-- int 	  y_pos -> posição do botão no eixo y
+-- Retorno: Button Widget 
+local function createButton(title, y_pos, func)
+	
+	assert(type(title) == "string" ,"O título do botão deve ser do tipo string")
+	assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
+	assert(type(func) == "function" ,"O evento do botão deve ser do tipo function")
+	
+		local btn =  widget.newButton{
+		label = title,
+		labelColor = { 
+			default = color("fff"), 
+			over = color("b58863")
+		},
+		fontSize = 30,
+		font = FONT,
+		defaultFile = REC_BUTTON_PNG,
+		overFile = REC_BUTTON_PNG_OVER,
+		width = BUTTON_WIDTH, 
+		height = BUTTON_HEIGHT,
+		onRelease = func	-- event listener function
+	}
+	btn.x = display.contentCenterX
+	btn.y = y_pos
+	return btn
 end
 
 function scene:create( event )
@@ -33,33 +99,26 @@ function scene:create( event )
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
 	-- display a background image
-	local background = display.newImageRect( "background.jpg", display.actualContentWidth, display.actualContentHeight )
-	background.anchorX = 0
-	background.anchorY = 0
-	background.x = 0 + display.screenOriginX 
-	background.y = 0 + display.screenOriginY
+	-- local background = display.newImageRect( "background.jpg", display.actualContentWidth, display.actualContentHeight )
+	-- background.anchorX = 0
+	-- background.anchorY = 0
+	-- background.x = 0 + display.screenOriginX 
+	-- background.y = 0 + display.screenOriginY
 	
-	-- create/position logo/title image on upper-half of the screen
-	local titleLogo = display.newImageRect( "logo.png", 264, 42 )
-	titleLogo.x = display.contentCenterX
-	titleLogo.y = 100
-	
+	local title = display.newText("Xadrez", display.contentCenterX, 200, FONT, 200);
+
 	-- create a widget button (which will loads level1.lua on release)
-	playBtn = widget.newButton{
-		label = "Play Now",
-		labelColor = { default={ 1.0 }, over={ 0.5 } },
-		defaultFile = "button.png",
-		overFile = "button-over.png",
-		width = 154, height = 40,
-		onRelease = onPlayBtnRelease	-- event listener function
-	}
-	playBtn.x = display.contentCenterX
-	playBtn.y = display.contentHeight - 125
+
+	pvpBtn = createButton("Jogador vs Jogador", 		(display.contentHeight - 500), onPlayBtnRelease)
+	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 340), onPlayBtnRelease)
+	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 180), onPlayBtnRelease)
 	
 	-- all display objects must be inserted into group
-	sceneGroup:insert( background )
-	sceneGroup:insert( titleLogo )
-	sceneGroup:insert( playBtn )
+	--sceneGroup:insert( background )
+	sceneGroup:insert( title )
+	sceneGroup:insert( pvpBtn )
+	sceneGroup:insert( pviBtn )
+	sceneGroup:insert( iviBtn )
 end
 
 function scene:show( event )
@@ -98,9 +157,19 @@ function scene:destroy( event )
 	-- INSERT code here to cleanup the scene
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	
-	if playBtn then
-		playBtn:removeSelf()	-- widgets must be manually removed
-		playBtn = nil
+	if pvpBtn then
+		pvpBtn:removeSelf()	-- widgets must be manually removed
+		pvpBtn = nil
+	end
+
+	if pviBtn then
+		pviBtn:removeSelf()	-- widgets must be manually removed
+		pviBtn = nil
+	end
+
+	if iviBtn then
+		iviBtn:removeSelf()	-- widgets must be manually removed
+		iviBtn = nil
 	end
 end
 
