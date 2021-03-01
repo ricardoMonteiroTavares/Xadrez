@@ -4,7 +4,7 @@ local Peca = require("Peca")
 local Rei = classes.class(Peca)
 
 --Construtor
-function Bispo:init(posX, posY, cor, peso)
+function Rei:init(posX, posY, cor, peso)
     self.super:init(posX, posY, cor, peso)
 end
 
