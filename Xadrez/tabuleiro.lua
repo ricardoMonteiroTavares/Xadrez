@@ -7,6 +7,37 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 
+local startTimePlayerOne = nil
+local startTimePlayerTwo = nil
+local lastTime = nil
+local endTime = 3600
+local currentTimePlayerOne = nil
+local currentTimePlayerTwo = nil
+local isPlayerOne = true
+
+local function timer(isPlayerOne)
+	if isPlayerOne then
+		if lastTime == nil then 
+			lastTime = os.time()
+			currentTimePlayerOne = lastTime
+			return
+		end
+		if currentTimePlayerOne < endTime then
+			currentTimePlayerOne = os.difftime(os.time(),lastTime);
+			lastTime = os.time()
+			return
+		end
+	end
+	else
+		if currentTimePlayerTwo < endTime then
+			currentTimePlayerTwo = os.time() - lastTime
+			lastTime = os.time()
+			return
+		end
+	end
+end
+
+
 --------------------------------------------
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
@@ -29,6 +60,7 @@ local grid = {}
 for i = 1, GRID_HEIGHT do
 	grid[i] = {}
 end
+
 
 function scene:create( event )
 

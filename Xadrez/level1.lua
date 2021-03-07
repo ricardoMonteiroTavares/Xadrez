@@ -12,6 +12,35 @@ local physics = require "physics"
 
 --------------------------------------------
 
+local startTimePlayerOne = nil
+local startTimePlayerTwo = nil
+local lastTime = nil
+local endTime = 3600
+local currentTimePlayerOne = 0
+local currentTimePlayerTwo = 0
+local isPlayerOne = true
+
+local function timerGame(isPlayerOne)
+	if isPlayerOne then
+		if lastTime == nil then 
+			lastTime = os.time()
+			currentTimePlayerOne = currentTimePlayerOne + os.time() - lastTime
+			return
+		end
+		if currentTimePlayerOne < endTime then
+			currentTimePlayerOne = currentTimePlayerOne + os.time() - lastTime
+			lastTime = os.time()
+			return
+		end
+	else
+		if currentTimePlayerTwo < endTime then
+			currentTimePlayerTwo = currentTimePlayerTwo + os.time() - lastTime
+			lastTime = os.time()
+			return
+		end
+	end
+end
+
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
@@ -21,6 +50,13 @@ function scene:create( event )
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
+endTime = 20
+	timerP1 = display.newText("Timer Player 1:  00:00", -300, 100, 800, 100 )
+    timerP2 = display.newText("Timer Player 2:  00:00", 1200, 100, 800, 100 )
+	local minutes = math.floor( endTime / 60 )
+    local seconds = endTime % 60
+	limitTIme = display.newText(string.format("Limit time:  %02d:%02d",minutes, seconds),1300, 1200, 800, 100 )
+
 
 	local sceneGroup = self.view
 
@@ -66,6 +102,7 @@ end
 
 
 function scene:show( event )
+
 	local sceneGroup = self.view
 	local phase = event.phase
 	
@@ -109,6 +146,18 @@ function scene:destroy( event )
 	physics = nil
 end
 
+function update( event )
+	timerGame(true)
+	local minutes = math.floor( currentTimePlayerOne / 60 )
+    local seconds = currentTimePlayerOne % 60
+	timerP1.text = string.format("Timer Player 1:  %02d:%02d",minutes, seconds)
+	local minutes = math.floor( currentTimePlayerTwo / 60 )
+    local seconds = currentTimePlayerTwo % 60
+	timerP2.text = string.format("Timer Player 2:  %02d:%02d",minutes, seconds)
+end
+
+
+
 ---------------------------------------------------------------------------------
 
 -- Listener setup
@@ -116,6 +165,8 @@ scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
+Runtime:addEventListener( "enterFrame", update )
+
 
 -----------------------------------------------------------------------------------------
 
