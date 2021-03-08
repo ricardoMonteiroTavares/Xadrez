@@ -10,7 +10,18 @@ local scene = composer.newScene()
 -- include Corona's "physics" library
 local physics = require "physics"
 
+local nanosvg = require( "plugin.nanosvg" )
+
+
 --------------------------------------------
+-- path to the chessboard
+local CHESSBOARD_PATH = "\\assets\\chessboard\\"
+
+-- path to the pieces
+local PIECES_PATH = "\\assets\\pieces\\"
+
+-- complete path to the chessboard
+local CHESSBOARD_PNG = CHESSBOARD_PATH .. "chessboard.png"
 
 local startTimePlayerOne = nil
 local startTimePlayerTwo = nil
@@ -19,6 +30,18 @@ local endTime = 3600
 local currentTimePlayerOne = 0
 local currentTimePlayerTwo = 0
 local isPlayerOne = true
+
+local function generateBoard()
+	local chessboard = display.newImageRect( CHESSBOARD_PNG, 1280, display.contentHeight) 
+	chessboard.x = display.contentCenterX
+	chessboard.y = display.contentCenterY
+
+	local p1rook = display.newImageRect( CHESSBOARD_PATH .. "p1rook.svg", 1280, display.contentHeight) 
+	chessboard.x = display.contentCenterX
+	chessboard.y = display.contentCenterY
+
+	return chessboard, p1rook
+end
 
 local function timerGame(isPlayerOne)
 	if isPlayerOne then
@@ -50,12 +73,11 @@ function scene:create( event )
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
-endTime = 20
-	timerP1 = display.newText("Timer Player 1:  00:00", -300, 100, 800, 100 )
-    timerP2 = display.newText("Timer Player 2:  00:00", 1200, 100, 800, 100 )
+	timerP1 = display.newText("Player 1:  00:00", -500, 100, 500, 100 )
+    timerP2 = display.newText("Player 2:  00:00", 1300, 100, 500, 100 )
 	local minutes = math.floor( endTime / 60 )
     local seconds = endTime % 60
-	limitTIme = display.newText(string.format("Limit time:  %02d:%02d",minutes, seconds),1300, 1200, 800, 100 )
+	limitTIme = display.newText(string.format("Limit time:  %02d:%02d",minutes, seconds),1250, 1200, 500, 100 )
 
 
 	local sceneGroup = self.view
@@ -70,34 +92,51 @@ endTime = 20
 	-- the physical screen will likely be a different shape than our defined content area
 	-- since we are going to position the background from it's top, left corner, draw the
 	-- background at the real top, left corner.
-	local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
-	background.anchorX = 0 
-	background.anchorY = 0
-	background:setFillColor( .5 )
+	--local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
+	--background.anchorX = 0 
+	--background.anchorY = 0
+	--background:setFillColor( .5 )
+	local chessboard = display.newImageRect( CHESSBOARD_PNG, 1280, display.contentHeight) 
+	chessboard.x = display.contentCenterX
+	chessboard.y = display.contentCenterY
+
+
+	local tex = nanosvg.newTexture(
+	{
+   		filename = "p1rook.svg",
+		baseDir = PIECES_PATH,
+	})
+
+	local p1rook = display.newImageRect( tex.filename, tex.baseDir, 60, 60) 
 	
+	p1rook.x = display.contentCenterX
+	p1rook.y = display.contentCenterY
+	tex:releaseSelf()
 	-- make a crate (off-screen), position it, and rotate slightly
-	local crate = display.newImageRect( "crate.png", 90, 90 )
-	crate.x, crate.y = 160, -100
-	crate.rotation = 15
+	--local crate = display.newImageRect( "crate.png", 90, 90 )
+	--crate.x, crate.y = 160, -100
+	--crate.rotation = 15
 	
 	-- add physics to the crate
-	physics.addBody( crate, { density=1.0, friction=0.3, bounce=0.3 } )
+	--physics.addBody( crate, { density=1.0, friction=0.3, bounce=0.3 } )
 	
 	-- create a grass object and add physics (with custom shape)
-	local grass = display.newImageRect( "grass.png", screenW, 82 )
-	grass.anchorX = 0
-	grass.anchorY = 1
+	--local grass = display.newImageRect( "grass.png", screenW, 82 )
+	--grass.anchorX = 0
+	--grass.anchorY = 1
 	--  draw the grass at the very bottom of the screen
-	grass.x, grass.y = display.screenOriginX, display.actualContentHeight + display.screenOriginY
+	--grass.x, grass.y = display.screenOriginX, display.actualContentHeight + display.screenOriginY
 	
 	-- define a shape that's slightly shorter than image bounds (set draw mode to "hybrid" or "debug" to see)
-	local grassShape = { -halfW,-34, halfW,-34, halfW,34, -halfW,34 }
-	physics.addBody( grass, "static", { friction=0.3, shape=grassShape } )
+	--local grassShape = { -halfW,-34, halfW,-34, halfW,34, -halfW,34 }
+	--physics.addBody( grass, "static", { friction=0.3, shape=grassShape } )
 	
 	-- all display objects must be inserted into group
-	sceneGroup:insert( background )
-	sceneGroup:insert( grass)
-	sceneGroup:insert( crate )
+	sceneGroup:insert( chessboard )
+	sceneGroup:insert( p1rook )
+
+	--sceneGroup:insert( grass)
+	--sceneGroup:insert( crate )
 end
 
 
@@ -150,10 +189,10 @@ function update( event )
 	timerGame(true)
 	local minutes = math.floor( currentTimePlayerOne / 60 )
     local seconds = currentTimePlayerOne % 60
-	timerP1.text = string.format("Timer Player 1:  %02d:%02d",minutes, seconds)
+	timerP1.text = string.format("Player 1:  %02d:%02d",minutes, seconds)
 	local minutes = math.floor( currentTimePlayerTwo / 60 )
     local seconds = currentTimePlayerTwo % 60
-	timerP2.text = string.format("Timer Player 2:  %02d:%02d",minutes, seconds)
+	timerP2.text = string.format("Player 2:  %02d:%02d",minutes, seconds)
 end
 
 

@@ -40,10 +40,11 @@ settings =
 	--
 	-- Plugins section
 	--
-	plugins =
-	{
-
-	},
+	plugins = {
+        ["plugin.nanosvg"] = {
+            publisherId = "com.coronalabs",
+        },
+    },
 
 	--
 	-- Project section
