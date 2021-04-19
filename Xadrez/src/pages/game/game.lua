@@ -75,11 +75,11 @@ function scene:create( event )
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
-	timerP1 = display.newText("Player 1:  00:00", -500, 100, 500, 100 )
-    timerP2 = display.newText("Player 2:  00:00", 1300, 100, 500, 100 )
+	timerP1 = display.newText("Player 1:  00:00", 270, 100, 500, 100 )
+    timerP2 = display.newText("Player 2:  00:00", 270, 300, 500, 100 )
 	local minutes = math.floor( endTime / 60 )
     local seconds = endTime % 60
-	limitTIme = display.newText(string.format("Limit time:  %02d:%02d",minutes, seconds),1250, 1200, 500, 100 )
+	limitTIme = display.newText(string.format("Limit time:  %02d:%02d",minutes, seconds),270, 500, 500, 100 )
 
 
 	local sceneGroup = self.view
@@ -100,7 +100,7 @@ function scene:create( event )
 	background:setFillColor( .5 )
 	
 	local chessboard = display.newImageRect( CHESSBOARD_PNG, 640, 640) 
-	chessboard.x = display.contentCenterX
+	chessboard.x = display.contentWidth - 380
 	chessboard.y = display.contentCenterY
 
 
