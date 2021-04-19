@@ -140,12 +140,10 @@ function scene:create( event )
 	pvpBtn = createButton("Jogador vs Jogador", 		(display.contentHeight - 300), onPlayBtnRelease)
 	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 200), onPlayBtnRelease)
 	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 100), onPlayBtnRelease)
-	print(display.contentWidth)
-	print(display.contentHeight)
+
 	settingsBtn = createSettingsButton((display.contentWidth - 64),(display.contentHeight - 64), onPlayBtnRelease)
 	
 	-- all display objects must be inserted into group
-	--sceneGroup:insert( background )
 	sceneGroup:insert( title )
 	sceneGroup:insert( pvpBtn )
 	sceneGroup:insert( pviBtn )
