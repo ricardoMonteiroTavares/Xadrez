@@ -1,21 +1,36 @@
 -----------------------------------------------------------------------------------------
 --
--- tabuleiro.lua
+-- game.lua
 --
 -----------------------------------------------------------------------------------------
 
 local composer = require( "composer" )
 local scene = composer.newScene()
 
+-- include Corona's "physics" library
+local physics = require "physics"
+
+local nanosvg = require( "plugin.nanosvg" )
+
+
 --------------------------------------------
--- forward declarations and other locals
-local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
+-- path to the chessboard
+local CHESSBOARD_PATH = "\\assets\\chessboard\\"
 
--- pasta que contém o png do tabuleiro
-local CHESSBOARD_PATH = ""
+-- path to the pieces
+local PIECES_PATH = "\\assets\\pieces\\"
 
--- caminho completo do arquivo png do tabuleiro
-local CHESSBOARD_PNG = CHESSBOARD_PATH .. "tabuleiro_pretobranco.png"
+-- complete path to the chessboard
+local CHESSBOARD_PNG = CHESSBOARD_PATH .. "chessboard.png"
+
+local startTimePlayerOne = nil
+local startTimePlayerTwo = nil
+local lastTime = nil
+local endTime = 3600
+local currentTimePlayerOne = 0
+local currentTimePlayerTwo = 0
+local isPlayerOne = true
+
 
 -- "grid" controla o tamanho do tabuleiro, "cell" controla o tamanho de cada célula do tabuleiro
 local GRID_WIDTH = 8
@@ -30,6 +45,29 @@ for i = 1, GRID_HEIGHT do
 	grid[i] = {}
 end
 
+local function timerGame(isPlayerOne)
+	if isPlayerOne then
+		if lastTime == nil then 
+			lastTime = os.time()
+			currentTimePlayerOne = currentTimePlayerOne + os.time() - lastTime
+			return
+		end
+		if currentTimePlayerOne < endTime then
+			currentTimePlayerOne = currentTimePlayerOne + os.time() - lastTime
+			lastTime = os.time()
+			return
+		end
+	else
+		if currentTimePlayerTwo < endTime then
+			currentTimePlayerTwo = currentTimePlayerTwo + os.time() - lastTime
+			lastTime = os.time()
+			return
+		end
+	end
+end
+
+-- forward declarations and other locals
+local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
 function scene:create( event )
 
@@ -37,8 +75,20 @@ function scene:create( event )
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
+	timerP1 = display.newText("Player 1:  00:00", -500, 100, 500, 100 )
+    timerP2 = display.newText("Player 2:  00:00", 1300, 100, 500, 100 )
+	local minutes = math.floor( endTime / 60 )
+    local seconds = endTime % 60
+	limitTIme = display.newText(string.format("Limit time:  %02d:%02d",minutes, seconds),1250, 1200, 500, 100 )
+
 
 	local sceneGroup = self.view
+
+	-- We need physics started to add bodies, but we don't want the simulaton
+	-- running until the scene is on the screen.
+	physics.start()
+	physics.pause()
+
 
 	-- create a grey rectangle as the backdrop
 	-- the physical screen will likely be a different shape than our defined content area
@@ -48,26 +98,32 @@ function scene:create( event )
 	background.anchorX = 0 
 	background.anchorY = 0
 	background:setFillColor( .5 )
-
-	--
-	-- "checkerBoard" controla renderização do tabuleiro:
-
-	local checkerboard = display.newImageRect(CHESSBOARD_PNG, 640, 640)
-	checkerboard.x = display.contentCenterX
-	checkerboard.y = display.contentCenterY
 	
+	local chessboard = display.newImageRect( CHESSBOARD_PNG, 640, 640) 
+	chessboard.x = display.contentCenterX
+	chessboard.y = display.contentCenterY
 
 
+	local tex = nanosvg.newTexture(
+	{
+   		filename = PIECES_PATH .. "p1pawn.svg",
+	})
 
+	local p1rook = display.newImageRect( tex.filename, tex.baseDir, 60, 60) 
+	
+	p1rook.x = display.contentCenterX
+	p1rook.y = display.contentCenterY
+	tex:releaseSelf()
 	
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
-	sceneGroup:insert( checkerboard )
-
+	sceneGroup:insert( chessboard )
+	sceneGroup:insert( p1rook )
 end
 
 
 function scene:show( event )
+
 	local sceneGroup = self.view
 	local phase = event.phase
 	
@@ -78,8 +134,7 @@ function scene:show( event )
 		-- 
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
-
-
+		physics.start()
 	end
 end
 
@@ -93,8 +148,7 @@ function scene:hide( event )
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
-
-
+		physics.stop()
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
 	end	
@@ -108,9 +162,22 @@ function scene:destroy( event )
 	-- INSERT code here to cleanup the scene
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
-
-
+	
+	package.loaded[physics] = nil
+	physics = nil
 end
+
+function update( event )
+	timerGame(true)
+	local minutes = math.floor( currentTimePlayerOne / 60 )
+    local seconds = currentTimePlayerOne % 60
+	timerP1.text = string.format("Player 1:  %02d:%02d",minutes, seconds)
+	local minutes = math.floor( currentTimePlayerTwo / 60 )
+    local seconds = currentTimePlayerTwo % 60
+	timerP2.text = string.format("Player 2:  %02d:%02d",minutes, seconds)
+end
+
+
 
 ---------------------------------------------------------------------------------
 
@@ -119,6 +186,8 @@ scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
+Runtime:addEventListener( "enterFrame", update )
+
 
 -----------------------------------------------------------------------------------------
 

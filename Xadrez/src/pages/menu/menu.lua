@@ -10,6 +10,9 @@ local scene = composer.newScene()
 -- include Corona's "widget" library
 local widget = require "widget"
 
+-- caminho para a tela que inicia o jogo
+local GAME_SCENE = "\\src\\pages\\game\\game"
+
 -- pasta que contém os botões
 local REC_BUTTON_PATH = "\\assets\\buttons\\rectangleButton\\"
 
@@ -31,8 +34,8 @@ local iviBtn
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
 	
-	-- go to level1.lua scene
-	composer.gotoScene( "level1", "fade", 500 )
+	-- go to game.lua scene
+	composer.gotoScene( GAME_SCENE, "fade", 500 )
 	
 	return true	-- indicates successful touch
 end
