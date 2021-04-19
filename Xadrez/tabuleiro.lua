@@ -30,6 +30,7 @@ for i = 1, GRID_HEIGHT do
 	grid[i] = {}
 end
 
+
 function scene:create( event )
 
 	-- Called when the scene's view does not exist.
