@@ -21,8 +21,8 @@ local REC_BUTTON_PNG = BUTTON_PATH .. "rectangleButton\\rectangleButton.png"
 local REC_BUTTON_PNG_OVER = BUTTON_PATH .. "rectangleButton\\rectangleButton_over.png"
 local SETTINGS_BUTTON_PNG = BUTTON_PATH .. "settingsButton\\settings.png"
 
-local BUTTON_HEIGHT = 96
-local BUTTON_WIDTH = 400
+local BUTTON_HEIGHT = 60
+local BUTTON_WIDTH = 250
 
 local FONT = "Times New Roman"
 --------------------------------------------
@@ -67,8 +67,9 @@ local function color(hex)
 end
 
 -- Função que cria os botões
--- String title -> título do botão
--- int 	  y_pos -> posição do botão no eixo y
+-- String 		title -> título do botão
+-- int 	  		y_pos -> posição do botão no eixo y
+-- Function 	func -> função a ser executada ao clicar no botão
 -- Retorno: Button Widget 
 local function createButton(title, y_pos, func)
 	
@@ -76,13 +77,13 @@ local function createButton(title, y_pos, func)
 	assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
 	assert(type(func) == "function" ,"O evento do botão deve ser do tipo function")
 	
-		local btn =  widget.newButton{
+	local btn =  widget.newButton{
 		label = title,
 		labelColor = { 
 			default = color("fff"), 
 			over = color("b58863")
 		},
-		fontSize = 30,
+		fontSize = 20,
 		font = FONT,
 		defaultFile = REC_BUTTON_PNG,
 		overFile = REC_BUTTON_PNG_OVER,
@@ -132,13 +133,15 @@ function scene:create( event )
 	-- background.x = 0 + display.screenOriginX 
 	-- background.y = 0 + display.screenOriginY
 	
-	local title = display.newText("Xadrez", display.contentCenterX, 200, FONT, 200);
+	local title = display.newText("Xadrez", display.contentCenterX, 200, FONT, 100);
 
 	-- create a widget button (which will loads level1.lua on release)
 
-	pvpBtn = createButton("Jogador vs Jogador", 		(display.contentHeight - 500), onPlayBtnRelease)
-	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 340), onPlayBtnRelease)
-	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 180), onPlayBtnRelease)
+	pvpBtn = createButton("Jogador vs Jogador", 		(display.contentHeight - 300), onPlayBtnRelease)
+	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 200), onPlayBtnRelease)
+	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 100), onPlayBtnRelease)
+	print(display.contentWidth)
+	print(display.contentHeight)
 	settingsBtn = createSettingsButton((display.contentWidth - 64),(display.contentHeight - 64), onPlayBtnRelease)
 	
 	-- all display objects must be inserted into group
