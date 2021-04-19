@@ -14,11 +14,12 @@ local widget = require "widget"
 local GAME_SCENE = "\\src\\pages\\game\\game"
 
 -- pasta que contém os botões
-local REC_BUTTON_PATH = "\\assets\\buttons\\rectangleButton\\"
+local BUTTON_PATH = "\\assets\\buttons\\"
 
 -- caminho dos arquivos png
-local REC_BUTTON_PNG = REC_BUTTON_PATH .. "rectangleButton.png"
-local REC_BUTTON_PNG_OVER = REC_BUTTON_PATH .. "rectangleButton_over.png"
+local REC_BUTTON_PNG = BUTTON_PATH .. "rectangleButton\\rectangleButton.png"
+local REC_BUTTON_PNG_OVER = BUTTON_PATH .. "rectangleButton\\rectangleButton_over.png"
+local SETTINGS_BUTTON_PNG = BUTTON_PATH .. "settingsButton\\settings.png"
 
 local BUTTON_HEIGHT = 96
 local BUTTON_WIDTH = 400
@@ -30,6 +31,7 @@ local FONT = "Times New Roman"
 local pvpBtn
 local pviBtn
 local iviBtn
+local settingsBtn
 
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
@@ -93,6 +95,28 @@ local function createButton(title, y_pos, func)
 	return btn
 end
 
+-- Função que cria o botão de configurações
+-- int	  		x_pos -> posição do botão no eixo x
+-- int 	  		y_pos -> posição do botão no eixo y
+-- Function 	func -> função a ser executada ao clicar no botão
+-- Retorno: Button Widget 
+local function createSettingsButton(x_pos, y_pos, func)
+	
+	assert(type(x_pos) == "number" ,"A posição do eixo X do botão deve ser do tipo number")
+	assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
+	assert(type(func) == "function" ,"O evento do botão deve ser do tipo function")
+	
+	local btn =  widget.newButton{
+		defaultFile = SETTINGS_BUTTON_PNG,
+		width = 64, 
+		height = 64,
+		onRelease = func	-- event listener function
+	}
+	btn.x = x_pos
+	btn.y = y_pos
+	return btn
+end
+
 function scene:create( event )
 	local sceneGroup = self.view
 
@@ -115,6 +139,7 @@ function scene:create( event )
 	pvpBtn = createButton("Jogador vs Jogador", 		(display.contentHeight - 500), onPlayBtnRelease)
 	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 340), onPlayBtnRelease)
 	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 180), onPlayBtnRelease)
+	settingsBtn = createSettingsButton((display.contentWidth - 64),(display.contentHeight - 64), onPlayBtnRelease)
 	
 	-- all display objects must be inserted into group
 	--sceneGroup:insert( background )
@@ -122,6 +147,7 @@ function scene:create( event )
 	sceneGroup:insert( pvpBtn )
 	sceneGroup:insert( pviBtn )
 	sceneGroup:insert( iviBtn )
+	sceneGroup:insert( settingsBtn )
 end
 
 function scene:show( event )
