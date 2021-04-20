@@ -22,6 +22,7 @@ local REC_BUTTON_PNG = BUTTON_PATH .. "rectangleButton\\rectangleButton.png"
 local REC_BUTTON_PNG_OVER = BUTTON_PATH .. "rectangleButton\\rectangleButton_over.png"
 local SETTINGS_BUTTON_PNG = BUTTON_PATH .. "settingsButton\\settings.png"
 local SWITCHER_BUTTON_PNG = BUTTON_PATH .. "switcher\\switches.png"
+local CLOSE_BUTTON_PNG = BUTTON_PATH .. "closeButton\\close.png"
 
 local BUTTON_HEIGHT = 60
 local BUTTON_WIDTH = 250
@@ -35,6 +36,8 @@ local pviBtn
 local iviBtn
 local settingsBtn
 
+
+local window
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
 	
@@ -103,16 +106,18 @@ end
 -- int 	  		y_pos -> posição do botão no eixo y
 -- Function 	func -> função a ser executada ao clicar no botão
 -- Retorno: Button Widget 
-local function createSettingsButton(x_pos, y_pos, func)
+local function createIconButton(icon, iconSize, x_pos, y_pos, func)
 	
+	assert(type(icon) == "string" ,"O caminho do ícone do botão deve ser do tipo string")
+	assert(type(iconSize) == "number" ,"O tamanho do ícone deve ser do tipo number")
 	assert(type(x_pos) == "number" ,"A posição do eixo X do botão deve ser do tipo number")
 	assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
 	assert(type(func) == "function" ,"O evento do botão deve ser do tipo function")
 	
 	local btn =  widget.newButton{
-		defaultFile = SETTINGS_BUTTON_PNG,
-		width = 64, 
-		height = 64,
+		defaultFile = icon,
+		width = iconSize, 
+		height = iconSize,
 		onRelease = func	-- event listener function
 	}
 	btn.x = x_pos
@@ -125,8 +130,13 @@ local function onSwitchPress( event )
     print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
 end
 
+local function closeSettingsWindow()
+	window:removeSelf()
+	window = nil
+end
+
 local function settingsWindow()
-	local window = display.newGroup()
+	window = display.newGroup()
 	
 	local options = {
 		frames = {
@@ -178,9 +188,12 @@ local function settingsWindow()
 		}
 	)
 	local titleMovementMusic = display.newText("Som de Jogada", 20, -15, FONT, 20);
+
+	local closeBtn = createIconButton(CLOSE_BUTTON_PNG, 32, 150, -150, closeSettingsWindow)
 	
 	window:insert( myBox )
 	window:insert( title )
+	window:insert( closeBtn )
 	window:insert( backgoundMusic )
 	window:insert( titleBackgoundMusic )
 	window:insert( movementMusic )
@@ -214,7 +227,7 @@ function scene:create( event )
 	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 200), onPlayBtnRelease)
 	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 100), onPlayBtnRelease)
 
-	settingsBtn = createSettingsButton((display.contentWidth - 64),(display.contentHeight - 64), settingsWindow)
+	settingsBtn = createIconButton(SETTINGS_BUTTON_PNG, 64, (display.contentWidth - 64),(display.contentHeight - 64), settingsWindow)
 	
 	-- all display objects must be inserted into group
 	sceneGroup:insert( title )
