@@ -5,6 +5,7 @@
 -----------------------------------------------------------------------------------------
 
 local composer = require( "composer" )
+local widget = require( "widget" )
 local scene = composer.newScene()
 
 -- include Corona's "widget" library
@@ -20,6 +21,7 @@ local BUTTON_PATH = "\\assets\\buttons\\"
 local REC_BUTTON_PNG = BUTTON_PATH .. "rectangleButton\\rectangleButton.png"
 local REC_BUTTON_PNG_OVER = BUTTON_PATH .. "rectangleButton\\rectangleButton_over.png"
 local SETTINGS_BUTTON_PNG = BUTTON_PATH .. "settingsButton\\settings.png"
+local SWITCHER_BUTTON_PNG = BUTTON_PATH .. "switcher\\switches.png"
 
 local BUTTON_HEIGHT = 60
 local BUTTON_WIDTH = 250
@@ -118,6 +120,77 @@ local function createSettingsButton(x_pos, y_pos, func)
 	return btn
 end
 
+local function onSwitchPress( event )
+    local switch = event.target
+    print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
+end
+
+local function settingsWindow()
+	local window = display.newGroup()
+	
+	local options = {
+		frames = {
+			{ x=0, y=0, width=64, height=28 },
+			{ x=0, y=36, width=64, height=28 },
+		},
+		sheetContentWidth = 64,
+		sheetContentHeight = 64
+	}
+	local onOffSwitchSheet = graphics.newImageSheet( SWITCHER_BUTTON_PNG, options )
+	
+	
+	local myBox = display.newRect( 0, 0, 300, 300 )
+	myBox:setFillColor( 1, 0, 0 )
+	
+	local title = display.newText("Configurações", 0, -120, FONT, 30);
+	
+	
+	local backgoundMusic = widget.newSwitch(
+		{
+			left = -120,
+			top = -80,
+			style = "checkbox",
+			id = "Backgound_Music",
+			
+			width = 64,
+			height = 32,
+			onPress = onSwitchPress,
+			sheet = onOffSwitchSheet,
+			frameOff = 1,
+			frameOn = 2
+		}
+	)
+	local titleBackgoundMusic = display.newText("Música de Fundo", 25, -65, FONT, 20);
+	
+	local movementMusic = widget.newSwitch(
+		{
+			left = -120,
+			top = -30,
+			style = "checkbox",
+			id = "Movement_Music",
+			
+			width = 64,
+			height = 32,
+			onPress = onSwitchPress,
+			sheet = onOffSwitchSheet,
+			frameOff = 1,
+			frameOn = 2
+		}
+	)
+	local titleMovementMusic = display.newText("Som de Jogada", 20, -15, FONT, 20);
+	
+	window:insert( myBox )
+	window:insert( title )
+	window:insert( backgoundMusic )
+	window:insert( titleBackgoundMusic )
+	window:insert( movementMusic )
+	window:insert( titleMovementMusic )
+	
+	window.x = display.contentCenterX
+	window.y = display.contentCenterY
+	window.anchorChildren = true
+end
+
 function scene:create( event )
 	local sceneGroup = self.view
 
@@ -141,7 +214,7 @@ function scene:create( event )
 	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 200), onPlayBtnRelease)
 	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 100), onPlayBtnRelease)
 
-	settingsBtn = createSettingsButton((display.contentWidth - 64),(display.contentHeight - 64), onPlayBtnRelease)
+	settingsBtn = createSettingsButton((display.contentWidth - 64),(display.contentHeight - 64), settingsWindow)
 	
 	-- all display objects must be inserted into group
 	sceneGroup:insert( title )
