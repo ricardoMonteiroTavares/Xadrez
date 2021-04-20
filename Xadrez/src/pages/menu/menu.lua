@@ -47,13 +47,8 @@ local function onPlayBtnRelease()
 	return true	-- indicates successful touch
 end
 
-local function onSwitchPress( event )
-    local switch = event.target
-    print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
-end
-
 local function settingsWindow()
-	window = SettingsWindow:Create(onSwitchPress, display.contentCenterX, display.contentCenterY)
+	window = SettingsWindow:Create(display.contentCenterX, display.contentCenterY)
 end
 
 function scene:create( event )

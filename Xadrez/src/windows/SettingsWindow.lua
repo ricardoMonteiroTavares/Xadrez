@@ -15,9 +15,8 @@ local FONT = "Times New Roman"
 local SettingsWindow = {}
 local mt = {__index = SettingsWindow}
 
-function SettingsWindow:Create(onSwitch, x_pos, y_pos)
+function SettingsWindow:Create(x_pos, y_pos)
 
-    assert(type(onSwitch) == "function" ,"O evento do onSwitch deve ser do tipo function")
     assert(type(x_pos) == "number" ,"A posição do eixo X do botão deve ser do tipo number")
     assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
     
@@ -38,6 +37,20 @@ function SettingsWindow:Create(onSwitch, x_pos, y_pos)
         obj.window:removeSelf()
         obj.window = nil
     end
+
+    function onSwitchPress( event )
+        local switch = event.target
+        if switch.id == "Backgound_Music" then
+            obj.data.Backgound_Music = switch.isOn
+            print( "Switch with ID '"..switch.id.."' is on: "..tostring(obj.data.Backgound_Music) )
+        elseif switch.id == "Movement_Music" then
+            obj.data.Movement_Music = switch.isOn
+            print( "Switch with ID '"..switch.id.."' is on: "..tostring(obj.data.Movement_Music) )
+        else
+            error("Error: ID Não encontrado")
+        end
+        
+    end
 	
 	local myBox = display.newRect( 0, 0, 300, 300 )
 	myBox.strokeWidth = 3
@@ -47,10 +60,10 @@ function SettingsWindow:Create(onSwitch, x_pos, y_pos)
     local title = display.newText("Configurações", 0, -120, FONT, 30)
 	
 	
-	local backgoundMusic = SwitchButton:Create("Backgound_Music", -120, -80, onSwitch) 
+	local backgoundMusic = SwitchButton:Create("Backgound_Music", -120, -80, onSwitchPress) 
 	local titleBackgoundMusic = display.newText("Música de Fundo", 25, -65, FONT, 20)
 	
-	local movementMusic = SwitchButton:Create("Movement_Music", -120, -30, onSwitch)
+	local movementMusic = SwitchButton:Create("Movement_Music", -120, -30, onSwitchPress)
 	local titleMovementMusic = display.newText("Som de Jogada", 20, -15, FONT, 20);
 
 	local closeBtn = IconButton:Create(CLOSE_BUTTON_PNG, 32, 150, -150, close)--closeSettingsWindow)
