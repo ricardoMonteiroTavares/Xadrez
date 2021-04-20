@@ -26,7 +26,7 @@ function SettingsWindow:Create(x_pos, y_pos)
 
     local obj = {
         data = {
-            Backgound_Music = false,
+            Backgound_Music = true,
             Movement_Music = false
         }
     }
@@ -60,10 +60,10 @@ function SettingsWindow:Create(x_pos, y_pos)
     local title = display.newText("Configurações", 0, -120, FONT, 30)
 	
 	
-	local backgoundMusic = SwitchButton:Create("Backgound_Music", -120, -80, onSwitchPress) 
+	local backgoundMusic = SwitchButton:Create("Backgound_Music", -120, -80, obj.data.Backgound_Music, onSwitchPress) 
 	local titleBackgoundMusic = display.newText("Música de Fundo", 25, -65, FONT, 20)
 	
-	local movementMusic = SwitchButton:Create("Movement_Music", -120, -30, onSwitchPress)
+	local movementMusic = SwitchButton:Create("Movement_Music", -120, -30, obj.data.Movement_Music, onSwitchPress)
 	local titleMovementMusic = display.newText("Som de Jogada", 20, -15, FONT, 20);
 
 	local closeBtn = IconButton:Create(CLOSE_BUTTON_PNG, 32, 150, -150, close)--closeSettingsWindow)

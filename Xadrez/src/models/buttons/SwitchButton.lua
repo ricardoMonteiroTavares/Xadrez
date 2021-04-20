@@ -9,11 +9,12 @@ local SWITCHER_BUTTON_PNG = BUTTON_PATH .. "switcher\\switches.png"
 local SwitchButton = {}
 local mt = {__index = SwitchButton}
 
-function SwitchButton:Create(id, x_pos, y_pos, func)
+function SwitchButton:Create(id, x_pos, y_pos, initialState, func)
 
     assert(type(id) == "string" ,"O id do botão deve ser do tipo string")
     assert(type(x_pos) == "number" ,"A posição do eixo X do botão deve ser do tipo number")
     assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
+	assert(type(initialState) == "boolean" ,"O initialState do botão deve ser do tipo boolean")
     assert(type(func) == "function" ,"O evento do botão deve ser do tipo function")
 
     local options = {
@@ -39,6 +40,7 @@ function SwitchButton:Create(id, x_pos, y_pos, func)
 			height = 32,
 			onPress = func,
 			sheet = onOffSwitchSheet,
+			initialSwitchState = initialState,
 			frameOff = 1,
 			frameOn = 2
 		}
