@@ -150,8 +150,11 @@ local function settingsWindow()
 	
 	
 	local myBox = display.newRect( 0, 0, 300, 300 )
-	myBox:setFillColor( 1, 0, 0 )
-	
+	myBox.strokeWidth = 3
+	local backgroundColor = color("525252")
+	local strokeColor = color("fff")
+	myBox:setFillColor( backgroundColor[1], backgroundColor[2], backgroundColor[3])
+	myBox:setStrokeColor( strokeColor[1], strokeColor[2], strokeColor[3])
 	local title = display.newText("Configurações", 0, -120, FONT, 30);
 	
 	
