@@ -25,7 +25,12 @@ function SettingsWindow:Create(onSwitch, x_pos, y_pos)
     local backgroundColor = Color:hexToRGB("525252")
 	local strokeColor = Color:hexToRGB("fff")
 
-    local obj = {}
+    local obj = {
+        data = {
+            Backgound_Music = false,
+            Movement_Music = false
+        }
+    }
     
     obj.window = display.newGroup()	
 
