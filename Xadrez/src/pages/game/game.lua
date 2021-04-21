@@ -87,12 +87,6 @@ local pauseBtn
 -- Retorno: void
 local function returningMenu()
 	-- go to game.lua scene
-	Runtime:removeEventListener( "enterFrame", update )
-	timerP1.text = nil
-	timerP2.text = nil
-	limitTIme.text = nil
-	currentTimePlayerOne = 0
-	currentTimePlayerTwo = 0
 	composer.removeScene( GAME_SCENE )
 	composer.gotoScene( MENU_SCENE, "fade", 500 )
 	
@@ -195,12 +189,12 @@ function scene:destroy( event )
 	-- 
 	-- INSERT code here to cleanup the scene
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
-	local sceneGroup = self.view
-	
-	if pvpBtn then
-		pauseBtn:removeSelf()	-- widgets must be manually removed
-		pauseBtn = nil
-	end
+	Runtime:removeEventListener( "enterFrame", update )
+	timerP1.text = nil
+	timerP2.text = nil
+	limitTIme.text = nil
+	currentTimePlayerOne = 0
+	currentTimePlayerTwo = 0
 
 	package.loaded[physics] = nil
 	physics = nil
