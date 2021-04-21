@@ -1,6 +1,7 @@
 IconButton = require("src.models.buttons.IconButton")
 SwitchButton = require("src.models.buttons.SwitchButton")
 Color = require( "src.util.Color" )
+toBoolean = require('src.util.toboolean')
 
 local widget = require( "widget" )
 
@@ -12,6 +13,9 @@ local CLOSE_BUTTON_PNG = BUTTON_PATH .. "closeButton\\close.png"
 
 local FONT = "Times New Roman"
 
+-- Path for the file to write
+local PATH = system.pathForFile( "settings.conf", system.ResourceDirectory )
+
 local SettingsWindow = {}
 local mt = {__index = SettingsWindow}
 
@@ -20,16 +24,67 @@ function SettingsWindow:Create(x_pos, y_pos)
     assert(type(x_pos) == "number" ,"A posição do eixo X do botão deve ser do tipo number")
     assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
     
+    function saveData(data)
+        local saveData = "Background_Music="..tostring(data.Background_Music).."\nMovement_Music="..tostring(data.Movement_Music)
+        
+        -- Open the file handle
+        local file, errorString = io.open( PATH, "w" )
+        
+        if not file then
+            -- Error occurred; output the cause
+            error( "File error: " .. errorString )
+        else
+            -- Write data to file
+            file:write( saveData )
+            -- Close the file handle
+            io.close( file )
+        end
+        
+        file = nil
+    end
+
+    function loadData()
+        local data = {}
+        -- Open the file handle
+        local file, errorString = io.open( PATH, "r" )
+        
+        if not file then
+            -- Error occurred; output the cause
+            error( "File error: " .. errorString )
+        else
+            -- Read data from file
+            for line in file:lines() do
+                print( type(line) )
+                local key, value = line:match("(%w+_%w+)=(%w+)");
+                print( key )
+                print( type(key) )
+                
+                if key == "Background_Music" then
+                    data.Background_Music = toBoolean(value)
+                    print( "Carregou o ID ID '"..key.."' com o valor: "..tostring(data.Background_Music) )
+                elseif key == "Movement_Music" then
+                    data.Movement_Music = toBoolean(value)
+                    print( "Carregou o ID '"..key.."' com o valor: "..tostring(data.Movement_Music) )
+                else
+                    error("Error: ID Não encontrado")
+                    return
+                end
+            end
+
+            -- Close the file handle
+            io.close( file )
+        end
+        
+        file = nil
+        return data
+    end
 
     local backgroundColor = Color:hexToRGB("525252")
 	local strokeColor = Color:hexToRGB("fff")
 
-    local obj = {
-        data = {
-            Backgound_Music = true,
-            Movement_Music = false
-        }
-    }
+    local obj = {}
+
+    obj.data = loadData()
     
     obj.window = display.newGroup()	
 
@@ -40,16 +95,17 @@ function SettingsWindow:Create(x_pos, y_pos)
 
     function onSwitchPress( event )
         local switch = event.target
-        if switch.id == "Backgound_Music" then
-            obj.data.Backgound_Music = switch.isOn
-            print( "Switch with ID '"..switch.id.."' is on: "..tostring(obj.data.Backgound_Music) )
+        if switch.id == "Background_Music" then
+            obj.data.Background_Music = switch.isOn
+            print( "Switch with ID '"..switch.id.."' is on: "..tostring(obj.data.Background_Music) )
         elseif switch.id == "Movement_Music" then
             obj.data.Movement_Music = switch.isOn
             print( "Switch with ID '"..switch.id.."' is on: "..tostring(obj.data.Movement_Music) )
         else
             error("Error: ID Não encontrado")
+            return
         end
-        
+        saveData(obj.data)
     end
 	
 	local myBox = display.newRect( 0, 0, 300, 300 )
@@ -60,7 +116,7 @@ function SettingsWindow:Create(x_pos, y_pos)
     local title = display.newText("Configurações", 0, -120, FONT, 30)
 	
 	
-	local backgoundMusic = SwitchButton:Create("Backgound_Music", -120, -80, obj.data.Backgound_Music, onSwitchPress) 
+	local backgoundMusic = SwitchButton:Create("Background_Music", -120, -80, obj.data.Background_Music, onSwitchPress) 
 	local titleBackgoundMusic = display.newText("Música de Fundo", 25, -65, FONT, 20)
 	
 	local movementMusic = SwitchButton:Create("Movement_Music", -120, -30, obj.data.Movement_Music, onSwitchPress)
