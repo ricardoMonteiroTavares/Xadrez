@@ -46,7 +46,7 @@ function PauseWindow:Create(x_pos, y_pos)
 	
     local title = display.newText("Pause", 0, -120, FONT, 30)
 	
-	local desistBtn = RectangleButton:Create("Desistir", -120, -80, close) 
+	local desistBtn = RectangleButton:Create("Desistir", 0, 60, close) 
 
 	local closeBtn = IconButton:Create(CLOSE_BUTTON_PNG, 32, 150, -150, close)
 	
