@@ -93,10 +93,16 @@ local function returningMenu()
 	return true	-- indicates successful touch
 end
 
+-- Função que auxilia o encerramento da janela
+-- Retorno: void
+local function closePauseWindow()
+	pauseBtn:setEnabled( true )
+end
+
 -- Função que cria a janela de pause
 -- Retorno: void
 local function pauseWindow()
-	window = PauseWindow:Create(display.contentCenterX, display.contentCenterY, returningMenu)
+	window = PauseWindow:Create(display.contentCenterX, display.contentCenterY, returningMenu, closePauseWindow)
 	pauseBtn:setEnabled( false )	
 end
 
@@ -149,15 +155,10 @@ function scene:show( event )
 	print("Mostrando a cena GAME");
 	local sceneGroup = self.view
 	local phase = event.phase
-	print(event);
+	
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
-		print("did")
-		-- timerP1.text = "Player 1:  00:00"
-		-- timerP2.text = "Player 2:  00:00"
-		-- limitTIme.text = string.format("Limit time:  %02d:%02d",math.floor( endTime / 60 ), (endTime % 60))
-		-- --Runtime:addEventListener( "enterFrame", update )
 		physics.start()
 	end
 end
@@ -190,6 +191,7 @@ function scene:destroy( event )
 	-- INSERT code here to cleanup the scene
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	Runtime:removeEventListener( "enterFrame", update )
+	Event.remove("closePauseWindow")
 	timerP1.text = nil
 	timerP2.text = nil
 	limitTIme.text = nil

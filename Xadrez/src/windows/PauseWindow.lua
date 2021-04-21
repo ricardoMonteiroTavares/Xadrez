@@ -17,11 +17,12 @@ local FONT = "Times New Roman"
 local PauseWindow = {}
 local mt = {__index = PauseWindow}
 
-function PauseWindow:Create(x_pos, y_pos, desistFunc)
+function PauseWindow:Create(x_pos, y_pos, desistFunc, closeFunc)
 
     assert(type(x_pos) == "number" ,"A posição do eixo X do botão deve ser do tipo number")
     assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
     assert(type(desistFunc) == "function" ,"O evento do botão deve ser do tipo function")
+    assert(type(closeFunc) == "function" ,"O evento do botão deve ser do tipo function")
 
     local backgroundColor = Color:hexToRGB("525252")
 	local strokeColor = Color:hexToRGB("fff")
@@ -42,8 +43,10 @@ function PauseWindow:Create(x_pos, y_pos, desistFunc)
         print("Apagando a janela de pause");
         obj.window:removeSelf()
         obj.window = nil
+        closeFunc()
     end
 
+    -- Função que realiza a ação de desistência
     function desist()
         close()
         desistFunc()
