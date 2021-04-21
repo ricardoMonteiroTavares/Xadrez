@@ -9,6 +9,13 @@ local SWITCHER_BUTTON_PNG = BUTTON_PATH .. "switcher\\switches.png"
 local SwitchButton = {}
 local mt = {__index = SwitchButton}
 
+-- Função que cria um SwitchButton
+-- String 		id    			-> ID do botão
+-- int	  		x_pos 			-> Posição do botão no eixo x
+-- int 	  		y_pos 			-> Posição do botão no eixo y
+-- boolean 	  	initialState 	-> Estado inicial
+-- Function 	func  			-> Função a ser executada ao clicar no botão
+-- Retorno: Switch Widget 
 function SwitchButton:Create(id, x_pos, y_pos, initialState, func)
 
     assert(type(id) == "string" ,"O id do botão deve ser do tipo string")

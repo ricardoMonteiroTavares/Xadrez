@@ -9,10 +9,6 @@ local widget = require( "widget" )
 
 local scene = composer.newScene()
 
--- include Corona's "widget" library
-local widget = require "widget"
-
-
 local IconButton = require("src.models.buttons.IconButton")
 local RectangleButton = require("src.models.buttons.RectangleButton")
 local SettingsWindow = require("src.windows.SettingsWindow")
@@ -38,6 +34,7 @@ local settingsBtn
 
 
 local window
+
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
 	
@@ -47,28 +44,21 @@ local function onPlayBtnRelease()
 	return true	-- indicates successful touch
 end
 
+-- Função que cria a janela de configurações
+-- Retorno: void
 local function settingsWindow()
 	window = SettingsWindow:Create(display.contentCenterX, display.contentCenterY)
+	pvpBtn:setEnabled( false )
+	pviBtn:setEnabled( false )
+	iviBtn:setEnabled( false )
+	settingsBtn:setEnabled( false )
 end
 
 function scene:create( event )
+	print("Criando a cena MENU");
 	local sceneGroup = self.view
-
-	-- Called when the scene's view does not exist.
-	-- 
-	-- INSERT code here to initialize the scene
-	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
-
-	-- display a background image
-	-- local background = display.newImageRect( "background.jpg", display.actualContentWidth, display.actualContentHeight )
-	-- background.anchorX = 0
-	-- background.anchorY = 0
-	-- background.x = 0 + display.screenOriginX 
-	-- background.y = 0 + display.screenOriginY
 	
 	local title = display.newText("Xadrez", display.contentCenterX, 200, FONT, 100);
-
-	-- create a widget button (which will loads level1.lua on release)
 
 	pvpBtn = RectangleButton:Create("Jogador vs Jogador", display.contentCenterX, (display.contentHeight - 300), onPlayBtnRelease)
 	pviBtn = RectangleButton:Create("Jogador vs Computador", display.contentCenterX, (display.contentHeight - 200), onPlayBtnRelease)
@@ -85,6 +75,7 @@ function scene:create( event )
 end
 
 function scene:show( event )
+	print("Mostrando a cena MENU");
 	local sceneGroup = self.view
 	local phase = event.phase
 	
@@ -99,6 +90,7 @@ function scene:show( event )
 end
 
 function scene:hide( event )
+	print("Escondendo a cena MENU");
 	local sceneGroup = self.view
 	local phase = event.phase
 	
@@ -113,6 +105,7 @@ function scene:hide( event )
 end
 
 function scene:destroy( event )
+	print("Destruindo a cena MENU");
 	local sceneGroup = self.view
 	
 	-- Called prior to the removal of scene's "view" (sceneGroup)
