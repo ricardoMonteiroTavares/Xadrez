@@ -43,6 +43,11 @@ function PauseWindow:Create(x_pos, y_pos, desistFunc)
         obj.window:removeSelf()
         obj.window = nil
     end
+
+    function desist()
+        close()
+        desistFunc()
+    end
 	
 
 	local myBox = display.newRect( 0, 0, 300, 300 )
@@ -54,7 +59,7 @@ function PauseWindow:Create(x_pos, y_pos, desistFunc)
 	
     local configBtn = RectangleButton:Create("Configurações", 0, -20, settingsWindow) 
 
-	local desistBtn = RectangleButton:Create("Desistir", 0, 60, desistFunc) 
+	local desistBtn = RectangleButton:Create("Desistir", 0, 60, desist) 
 
 	local closeBtn = IconButton:Create(CLOSE_BUTTON_PNG, 32, 150, -150, close)
 	
