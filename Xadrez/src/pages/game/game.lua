@@ -4,13 +4,14 @@
 --
 -----------------------------------------------------------------------------------------
 
+-- Imports
+local physics = require "physics"
+local nanosvg = require( "plugin.nanosvg" )
 local composer = require( "composer" )
+local IconButton = require("src.models.buttons.IconButton")
+local PauseWindow = require("src.windows.PauseWindow")
 local scene = composer.newScene()
 
--- include Corona's "physics" library
-local physics = require "physics"
-
-local nanosvg = require( "plugin.nanosvg" )
 
 
 --------------------------------------------
@@ -22,6 +23,12 @@ local PIECES_PATH = "\\assets\\pieces\\"
 
 -- complete path to the chessboard
 local CHESSBOARD_PNG = CHESSBOARD_PATH .. "chessboard.png"
+
+-- Pasta que contém os botões
+local BUTTON_PATH = "\\assets\\buttons\\"
+
+-- Caminho dos arquivos png
+local PAUSE_BUTTON_PNG = BUTTON_PATH .. "pauseButton\\pause.png"
 
 local startTimePlayerOne = nil
 local startTimePlayerTwo = nil
@@ -68,6 +75,13 @@ end
 
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
+local pauseBtn
+-- Função que cria a janela de pause
+-- Retorno: void
+local function pauseWindow()
+	window = PauseWindow:Create(display.contentCenterX, display.contentCenterY)
+	pauseBtn:setEnabled( false )	
+end
 
 function scene:create( event )
 
@@ -89,18 +103,10 @@ function scene:create( event )
 	physics.start()
 	physics.pause()
 
+	pauseBtn = IconButton:Create(PAUSE_BUTTON_PNG, 64, (display.contentWidth - 64), 64, pauseWindow)
 
-	-- create a grey rectangle as the backdrop
-	-- the physical screen will likely be a different shape than our defined content area
-	-- since we are going to position the background from it's top, left corner, draw the
-	-- background at the real top, left corner.
-	local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
-	background.anchorX = 0 
-	background.anchorY = 0
-	background:setFillColor( .5 )
-	
 	local chessboard = display.newImageRect( CHESSBOARD_PNG, 640, 640) 
-	chessboard.x = display.contentWidth - 380
+	chessboard.x = display.contentWidth - 450
 	chessboard.y = display.contentCenterY
 
 
@@ -116,8 +122,8 @@ function scene:create( event )
 	tex:releaseSelf()
 	
 	-- all display objects must be inserted into group
-	sceneGroup:insert( background )
 	sceneGroup:insert( chessboard )
+	sceneGroup:insert( pauseBtn )
 	sceneGroup:insert( p1rook )
 end
 
@@ -163,6 +169,11 @@ function scene:destroy( event )
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
 	
+	if pvpBtn then
+		pauseBtn:removeSelf()	-- widgets must be manually removed
+		pauseBtn = nil
+	end
+
 	package.loaded[physics] = nil
 	physics = nil
 end
