@@ -30,6 +30,9 @@ local BUTTON_PATH = "\\assets\\buttons\\"
 -- Caminho dos arquivos png
 local PAUSE_BUTTON_PNG = BUTTON_PATH .. "pauseButton\\pause.png"
 
+-- caminho para a tela que de menu
+local MENU_SCENE = "src\\pages\\menu\\menu"
+
 local startTimePlayerOne = nil
 local startTimePlayerTwo = nil
 local lastTime = nil
@@ -76,10 +79,22 @@ end
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 local pauseBtn
+
+
+
+-- Função que retorna a página de menu
+-- Retorno: void
+local function returningMenu()
+	-- go to game.lua scene
+	composer.gotoScene( MENU_SCENE, "fade", 500 )
+	
+	return true	-- indicates successful touch
+end
+
 -- Função que cria a janela de pause
 -- Retorno: void
 local function pauseWindow()
-	window = PauseWindow:Create(display.contentCenterX, display.contentCenterY)
+	window = PauseWindow:Create(display.contentCenterX, display.contentCenterY, returningMenu)
 	pauseBtn:setEnabled( false )	
 end
 

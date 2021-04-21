@@ -4,6 +4,7 @@ RectangleButton = require("src.models.buttons.RectangleButton")
 Color = require( "src.util.Color" )
 toBoolean = require('src.util.toboolean')
 widget = require( "widget" )
+SettingsWindow = require("src.windows.SettingsWindow")
 
 -- Pasta que contém os botões
 local BUTTON_PATH = "\\assets\\buttons\\"
@@ -13,23 +14,28 @@ local CLOSE_BUTTON_PNG = BUTTON_PATH .. "closeButton\\close.png"
 
 local FONT = "Times New Roman"
 
--- Caminho para o arquivo a ser manipulado
-local PATH = system.pathForFile( "settings.conf", system.ResourceDirectory )
-
 local PauseWindow = {}
 local mt = {__index = PauseWindow}
 
-function PauseWindow:Create(x_pos, y_pos)
+function PauseWindow:Create(x_pos, y_pos, desistFunc)
 
     assert(type(x_pos) == "number" ,"A posição do eixo X do botão deve ser do tipo number")
     assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
+    assert(type(desistFunc) == "function" ,"O evento do botão deve ser do tipo function")
 
     local backgroundColor = Color:hexToRGB("525252")
 	local strokeColor = Color:hexToRGB("fff")
 
     local obj = {}
     
-    obj.window = display.newGroup()	
+    obj.window = display.newGroup()
+    
+    
+    -- Função que cria a janela de configurações
+    -- Retorno: void
+    local function settingsWindow()
+        SettingsWindow:Create(x_pos, y_pos)
+    end
 
     -- Função que encerra a janela
     function close()
@@ -46,9 +52,9 @@ function PauseWindow:Create(x_pos, y_pos)
 	
     local title = display.newText("Pause", 0, -120, FONT, 30)
 	
-    local configBtn = RectangleButton:Create("Configurações", 0, -20, close) 
+    local configBtn = RectangleButton:Create("Configurações", 0, -20, settingsWindow) 
 
-	local desistBtn = RectangleButton:Create("Desistir", 0, 60, close) 
+	local desistBtn = RectangleButton:Create("Desistir", 0, 60, desistFunc) 
 
 	local closeBtn = IconButton:Create(CLOSE_BUTTON_PNG, 32, 150, -150, close)
 	
