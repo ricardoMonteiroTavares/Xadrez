@@ -32,6 +32,7 @@ local PAUSE_BUTTON_PNG = BUTTON_PATH .. "pauseButton\\pause.png"
 
 -- caminho para a tela que de menu
 local MENU_SCENE = "src\\pages\\menu\\menu"
+local GAME_SCENE = "\\src\\pages\\game\\game"
 
 local startTimePlayerOne = nil
 local startTimePlayerTwo = nil
@@ -86,6 +87,13 @@ local pauseBtn
 -- Retorno: void
 local function returningMenu()
 	-- go to game.lua scene
+	Runtime:removeEventListener( "enterFrame", update )
+	timerP1.text = nil
+	timerP2.text = nil
+	limitTIme.text = nil
+	currentTimePlayerOne = 0
+	currentTimePlayerTwo = 0
+	composer.removeScene( GAME_SCENE )
 	composer.gotoScene( MENU_SCENE, "fade", 500 )
 	
 	return true	-- indicates successful touch
@@ -99,7 +107,7 @@ local function pauseWindow()
 end
 
 function scene:create( event )
-
+	print("Criando a cena GAME");
 	-- Called when the scene's view does not exist.
 	-- 
 	-- INSERT code here to initialize the scene
@@ -144,40 +152,45 @@ end
 
 
 function scene:show( event )
-
+	print("Mostrando a cena GAME");
 	local sceneGroup = self.view
 	local phase = event.phase
-	
+	print(event);
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
-		-- Called when the scene is now on screen
-		-- 
-		-- INSERT code here to make the scene come alive
-		-- e.g. start timers, begin animation, play audio, etc.
+		print("did")
+		-- timerP1.text = "Player 1:  00:00"
+		-- timerP2.text = "Player 2:  00:00"
+		-- limitTIme.text = string.format("Limit time:  %02d:%02d",math.floor( endTime / 60 ), (endTime % 60))
+		-- --Runtime:addEventListener( "enterFrame", update )
 		physics.start()
 	end
 end
 
 function scene:hide( event )
+	print("Escondendo a cena GAME");
 	local sceneGroup = self.view
 	
 	local phase = event.phase
 	
 	if event.phase == "will" then
+		print("will")
 		-- Called when the scene is on screen and is about to move off screen
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
 		physics.stop()
 	elseif phase == "did" then
+		print("did")
+		
 		-- Called when the scene is now off screen
 	end	
 	
 end
 
 function scene:destroy( event )
-
+	print("Destruindo a cena GAME");
 	-- Called prior to the removal of scene's "view" (sceneGroup)
 	-- 
 	-- INSERT code here to cleanup the scene
