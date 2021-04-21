@@ -5,10 +5,13 @@
 -----------------------------------------------------------------------------------------
 
 local composer = require( "composer" )
+local widget = require( "widget" )
+
 local scene = composer.newScene()
 
--- include Corona's "widget" library
-local widget = require "widget"
+local IconButton = require("src.models.buttons.IconButton")
+local RectangleButton = require("src.models.buttons.RectangleButton")
+local SettingsWindow = require("src.windows.SettingsWindow")
 
 -- caminho para a tela que inicia o jogo
 local GAME_SCENE = "\\src\\pages\\game\\game"
@@ -17,12 +20,8 @@ local GAME_SCENE = "\\src\\pages\\game\\game"
 local BUTTON_PATH = "\\assets\\buttons\\"
 
 -- caminho dos arquivos png
-local REC_BUTTON_PNG = BUTTON_PATH .. "rectangleButton\\rectangleButton.png"
-local REC_BUTTON_PNG_OVER = BUTTON_PATH .. "rectangleButton\\rectangleButton_over.png"
 local SETTINGS_BUTTON_PNG = BUTTON_PATH .. "settingsButton\\settings.png"
 
-local BUTTON_HEIGHT = 60
-local BUTTON_WIDTH = 250
 
 local FONT = "Times New Roman"
 --------------------------------------------
@@ -33,6 +32,9 @@ local pviBtn
 local iviBtn
 local settingsBtn
 
+
+local window
+
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
 	
@@ -42,106 +44,27 @@ local function onPlayBtnRelease()
 	return true	-- indicates successful touch
 end
 
--- Função que converte um código de cor em hexadecimal sem o # em um código de cor decimal
--- String hex -> Cor em hexadecimal sem #
--- Retorno: rgb table
-local function color(hex)
-	assert(type(hex) == "string" ,"O código de cor deve ser do tipo string")
-	
-	if string.len(hex) == 6 then
-		local r = tonumber(string.sub(hex,1,2), 16)/255
-		local g = tonumber(string.sub(hex,3,4), 16)/255
-		local b = tonumber(string.sub(hex,5,6), 16)/255
-
-		return { r, g, b }
-	
-	elseif string.len(hex) == 3 then
-		local r = (tonumber(string.sub(hex, 1, 1), 16) * 17)/255
-		local g = (tonumber(string.sub(hex, 2, 2), 16) * 17)/255
-		local b = (tonumber(string.sub(hex, 3, 3), 16) * 17)/255
-
-		return { r, g, b }
-	else
-		error("O código de cor deve ter apenas 3 ou 6 caracteres.")
-	end
-end
-
--- Função que cria os botões
--- String 		title -> título do botão
--- int 	  		y_pos -> posição do botão no eixo y
--- Function 	func -> função a ser executada ao clicar no botão
--- Retorno: Button Widget 
-local function createButton(title, y_pos, func)
-	
-	assert(type(title) == "string" ,"O título do botão deve ser do tipo string")
-	assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
-	assert(type(func) == "function" ,"O evento do botão deve ser do tipo function")
-	
-	local btn =  widget.newButton{
-		label = title,
-		labelColor = { 
-			default = color("fff"), 
-			over = color("b58863")
-		},
-		fontSize = 20,
-		font = FONT,
-		defaultFile = REC_BUTTON_PNG,
-		overFile = REC_BUTTON_PNG_OVER,
-		width = BUTTON_WIDTH, 
-		height = BUTTON_HEIGHT,
-		onRelease = func	-- event listener function
-	}
-	btn.x = display.contentCenterX
-	btn.y = y_pos
-	return btn
-end
-
--- Função que cria o botão de configurações
--- int	  		x_pos -> posição do botão no eixo x
--- int 	  		y_pos -> posição do botão no eixo y
--- Function 	func -> função a ser executada ao clicar no botão
--- Retorno: Button Widget 
-local function createSettingsButton(x_pos, y_pos, func)
-	
-	assert(type(x_pos) == "number" ,"A posição do eixo X do botão deve ser do tipo number")
-	assert(type(y_pos) == "number" ,"A posição do eixo Y do botão deve ser do tipo number")
-	assert(type(func) == "function" ,"O evento do botão deve ser do tipo function")
-	
-	local btn =  widget.newButton{
-		defaultFile = SETTINGS_BUTTON_PNG,
-		width = 64, 
-		height = 64,
-		onRelease = func	-- event listener function
-	}
-	btn.x = x_pos
-	btn.y = y_pos
-	return btn
+-- Função que cria a janela de configurações
+-- Retorno: void
+local function settingsWindow()
+	window = SettingsWindow:Create(display.contentCenterX, display.contentCenterY)
+	pvpBtn:setEnabled( false )
+	pviBtn:setEnabled( false )
+	iviBtn:setEnabled( false )
+	settingsBtn:setEnabled( false )
 end
 
 function scene:create( event )
+	print("Criando a cena MENU");
 	local sceneGroup = self.view
-
-	-- Called when the scene's view does not exist.
-	-- 
-	-- INSERT code here to initialize the scene
-	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
-
-	-- display a background image
-	-- local background = display.newImageRect( "background.jpg", display.actualContentWidth, display.actualContentHeight )
-	-- background.anchorX = 0
-	-- background.anchorY = 0
-	-- background.x = 0 + display.screenOriginX 
-	-- background.y = 0 + display.screenOriginY
 	
 	local title = display.newText("Xadrez", display.contentCenterX, 200, FONT, 100);
 
-	-- create a widget button (which will loads level1.lua on release)
+	pvpBtn = RectangleButton:Create("Jogador vs Jogador", display.contentCenterX, (display.contentHeight - 300), onPlayBtnRelease)
+	pviBtn = RectangleButton:Create("Jogador vs Computador", display.contentCenterX, (display.contentHeight - 200), onPlayBtnRelease)
+	iviBtn = RectangleButton:Create("Computador vs Computador", display.contentCenterX, (display.contentHeight - 100), onPlayBtnRelease)
 
-	pvpBtn = createButton("Jogador vs Jogador", 		(display.contentHeight - 300), onPlayBtnRelease)
-	pviBtn = createButton("Jogador vs Computador", 		(display.contentHeight - 200), onPlayBtnRelease)
-	iviBtn = createButton("Computador vs Computador", 	(display.contentHeight - 100), onPlayBtnRelease)
-
-	settingsBtn = createSettingsButton((display.contentWidth - 64),(display.contentHeight - 64), onPlayBtnRelease)
+	settingsBtn = IconButton:Create(SETTINGS_BUTTON_PNG, 64, (display.contentWidth - 64),(display.contentHeight - 64), settingsWindow)
 	
 	-- all display objects must be inserted into group
 	sceneGroup:insert( title )
@@ -152,6 +75,7 @@ function scene:create( event )
 end
 
 function scene:show( event )
+	print("Mostrando a cena MENU");
 	local sceneGroup = self.view
 	local phase = event.phase
 	
@@ -166,6 +90,7 @@ function scene:show( event )
 end
 
 function scene:hide( event )
+	print("Escondendo a cena MENU");
 	local sceneGroup = self.view
 	local phase = event.phase
 	
@@ -180,6 +105,7 @@ function scene:hide( event )
 end
 
 function scene:destroy( event )
+	print("Destruindo a cena MENU");
 	local sceneGroup = self.view
 	
 	-- Called prior to the removal of scene's "view" (sceneGroup)
