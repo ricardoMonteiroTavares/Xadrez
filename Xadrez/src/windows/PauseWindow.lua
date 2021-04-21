@@ -46,6 +46,8 @@ function PauseWindow:Create(x_pos, y_pos)
 	
     local title = display.newText("Pause", 0, -120, FONT, 30)
 	
+    local configBtn = RectangleButton:Create("Configurações", 0, -20, close) 
+
 	local desistBtn = RectangleButton:Create("Desistir", 0, 60, close) 
 
 	local closeBtn = IconButton:Create(CLOSE_BUTTON_PNG, 32, 150, -150, close)
@@ -54,6 +56,7 @@ function PauseWindow:Create(x_pos, y_pos)
 	obj.window:insert( title )
 	obj.window:insert( closeBtn )
 	obj.window:insert( desistBtn )
+    obj.window:insert( configBtn )
 	
 	obj.window.x = x_pos
 	obj.window.y = y_pos
