@@ -2,9 +2,9 @@
     Piece Square Tables, adapted from Sunfish.py:
     https://github.com/thomasahle/sunfish/blob/master/sunfish.py
 ]]--
-local weights = { "p": 100, "n": 280, "b": 320, "r": 479, "q": 929, "k": 60000, "k_e": 60000 }
+local weights = { ["p"]= 100, ["n"]= 280, ["b"]= 320, ["r"]= 479, ["q"]= 929, ["k"]= 60000, ["k_e"]= 60000 }
 local pst_w = {
-    "p":{
+    ["p"] = {
             { 100, 100, 100, 100, 105, 100, 100,  100},
             {  78,  83,  86,  73, 102,  82,  85,  90},
             {   7,  29,  21,  44,  40,  31,  44,   7},
@@ -14,7 +14,7 @@ local pst_w = {
             { -31,   8,  -7, -37, -36, -14,   3, -31},
             {   0,   0,   0,   0,   0,   0,   0,   0}
         },
-    "n": { 
+    ["n"] = { 
             {-66, -53, -75, -75, -10, -55, -58, -70},
             { -3,  -6, 100, -36,   4,  62,  -4, -14},
             { 10,  67,   1,  74,  73,  27,  62,  -2},
@@ -24,7 +24,7 @@ local pst_w = {
             {-23, -15,   2,   0,   2,   0, -23, -20},
             {-74, -23, -26, -24, -19, -35, -22, -69}
         },
-    "b": { 
+    ["b"] = { 
             {-59, -78, -82, -76, -23,-107, -37, -50},
             {-11,  20,  35, -42, -39,  31,   2, -22},
             { -9,  39, -32,  41,  52, -10,  28, -14},
@@ -34,7 +34,7 @@ local pst_w = {
             { 19,  20,  11,   6,   7,   6,  20,  16},
             { -7,   2, -15, -12, -14, -15, -10, -10}
         },
-    "r": {  
+    ["r"] = {  
             { 35,  29,  33,   4,  37,  33,  56,  50},
             { 55,  29,  56,  67,  55,  62,  34,  60},
             { 19,  35,  28,  33,  45,  27,  25,  15},
@@ -44,7 +44,7 @@ local pst_w = {
             {-53, -38, -31, -26, -29, -43, -44, -53},
             {-30, -24, -18,   5,  -2, -18, -31, -32}
         },
-    "q": {   
+    ["q"] = {   
             {  6,   1,  -8,-104,  69,  24,  88,  26},
             { 14,  32,  60, -10,  20,  76,  57,  24},
             { -2,  43,  32,  60,  72,  63,  43,   2},
@@ -54,7 +54,7 @@ local pst_w = {
             {-36, -18,   0, -19, -15, -15, -21, -38},
             {-39, -30, -31, -13, -31, -36, -34, -42}
         },
-    "k": {  
+    ["k"] = {  
             {  4,  54,  47, -99, -99,  60,  83, -62},
             {-32,  10,  55,  56,  56,  55,  10,   3},
             {-62,  12, -57,  44, -67,  28,  37, -31},
@@ -66,7 +66,7 @@ local pst_w = {
         },
 
     -- Endgame King Table
-    "k_e": {
+    ["k_e"] = {
             {-50, -40, -30, -20, -20, -30, -40, -50},
             {-30, -20, -10,   0,   0, -10, -20, -30},
             {-30, -10,  20,  30,  30,  20, -10, -30},
@@ -79,17 +79,17 @@ local pst_w = {
 }
 -- Modificar
 local pst_b = {
-    "p": reverse(copyTable(pst_w["p"])),
-    "n": reverse(copyTable(pst_w["n"])),
-    "b": reverse(copyTable(pst_w["b"])),
-    "r": reverse(copyTable(pst_w["r"])),
-    "q": reverse(copyTable(pst_w["q"])),
-    "k": reverse(copyTable(pst_w["k"])),
-    "k_e": reverse(copyTable(pst_w["k_e"]))
+    ["p"] = reverse(copyTable(pst_w["p"])),
+    ["n"] = reverse(copyTable(pst_w["n"])),
+    ["b"] = reverse(copyTable(pst_w["b"])),
+    ["r"] = reverse(copyTable(pst_w["r"])),
+    ["q"] = reverse(copyTable(pst_w["q"])),
+    ["k"] = reverse(copyTable(pst_w["k"])),
+    ["k_e"] = reverse(copyTable(pst_w["k_e"]))
 }
 
-local pstOpponent = {"w": pst_b, "b": pst_w};
-local pstSelf = {"w": pst_w, "b": pst_b};
+local pstOpponent = {["w"] = pst_b, ["b"] = pst_w};
+local pstSelf = {["w"] = pst_w, ["b"] = pst_b};
 
 --[[
     Evaluates the board at this point in time, using the material weights and piece square tables.
@@ -108,7 +108,7 @@ function evaluateBoard (move, prevSum, color)
         end
     end
     
-    if ("captured" in move) then -- verificar
+    if (move[captured] ~= nil ) then
     
         -- Opponent piece was captured (good for us)
         if (move.color == color) then        
@@ -152,12 +152,13 @@ local function copyTable(datatable, cache, parents)
     parents = parents or {}
     local tblRes={}
     if type(datatable)=="table" then
-      if cache[datatable] then return cache[datatable]
+      if cache[datatable] then 
+        return cache[datatable] 
+    end
       assert(not parents[datatable])
       parents[datatable] = true
       for k,v in pairs(datatable) do 
-        tblRes[copyTable(k, cache, parents)]
-          = copyTable(v, cache, parents) 
+        tblRes[copyTable(k, cache, parents)] = copyTable(v, cache, parents) 
       end
       parents[datatable] = false
       cache[datatable] = tblRes

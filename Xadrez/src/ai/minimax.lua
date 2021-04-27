@@ -19,9 +19,9 @@
 require("src.ai.evaluation")
 
 function minimax(game, depth, alpha, beta, isMaximizingPlayer, sum, color)
-{
+
     positionCount =  positionCount + 1
-    local children = game.ugly_moves({verbose: true}) -- verificar
+    local children = game.ugly_moves({[verbose] = true}) -- trocar
     
     -- Sort moves randomly, so the same move isn't always picked on ties
     children.sort(function(a, b){return 0.5 - Math.random()}); -- trocar
@@ -41,7 +41,7 @@ function minimax(game, depth, alpha, beta, isMaximizingPlayer, sum, color)
         currMove = children[i]
 
         -- Note: in our case, the 'children' are simply modified game states
-        local currPrettyMove = game.ugly_move(currMove) -- verificar
+        local currPrettyMove = game.ugly_move(currMove) -- trocar
         local newSum = evaluateBoard(currPrettyMove, sum, color)
         local childBestMove, childValue = minimax(game, depth - 1, alpha, beta, (not isMaximizingPlayer), newSum, color)
         
